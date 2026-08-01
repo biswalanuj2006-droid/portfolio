@@ -9,3 +9,4 @@ whitenoise>=6.6
 
 # Optional: add gunicorn here when deploying on a Linux host (Render/Railway)
 # gunicorn>=22.0
+gunicorn==23.0.0
