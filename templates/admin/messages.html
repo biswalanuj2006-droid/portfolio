@@ -1,0 +1,47 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Messages{% endblock %}
+{% block page_title %}<i class="bi bi-chat-dots-fill"></i> Messages{% endblock %}
+{% block content %}
+<div class="admin-toolbar">
+  <form class="admin-search" method="get">
+    <i class="bi bi-search"></i>
+    <input type="text" name="q" value="{{ q }}" placeholder="Search messages..." aria-label="Search messages">
+  </form>
+  <span class="toolbar-info">{{ unread }} unread</span>
+</div>
+<div class="admin-card">
+  <div class="msg-list">
+    {% for m in page_obj %}
+      <div class="msg-row-wrap">
+        <a class="msg-row {% if not m.is_read %}unread{% endif %}" href="{% url 'core:message_detail' m.pk %}">
+          <span class="msg-avatar">{{ m.name|slice:":1" }}</span>
+          <div class="msg-body">
+            <b>{{ m.name }}</b>
+            <span>{{ m.subject|default:m.message|truncatechars:80 }}</span>
+          </div>
+          <small>{{ m.created_at|date:"d M Y H:i" }}</small>
+        </a>
+        <div class="msg-quick">
+          <form method="post" action="{% url 'core:message_toggle' m.pk %}" class="d-inline">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-ghost" title="Toggle read"><i class="bi {% if m.is_read %}bi-envelope{% else %}bi-envelope-open{% endif %}"></i></button>
+          </form>
+          <form method="post" action="{% url 'core:message_delete' m.pk %}" class="d-inline delete-form" data-confirm="Delete this message?">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-danger-ghost" title="Delete"><i class="bi bi-trash"></i></button>
+          </form>
+        </div>
+      </div>
+    {% empty %}
+      <div class="empty-state small">No messages found.</div>
+    {% endfor %}
+  </div>
+  {% if page_obj.has_other_pages %}
+  <div class="admin-pagination">
+    {% if page_obj.has_previous %}<a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}"><i class="bi bi-chevron-left"></i></a>{% endif %}
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}<a class="page-link" href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}"><i class="bi bi-chevron-right"></i></a>{% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Gallery - {{ profile.name|default:"Anuj Biswal" }}{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <span class="section-tag reveal">Moments</span>
+    <h1 class="page-title reveal">Photo <span class="gradient-text">gallery</span></h1>
+  </div>
+</section>
+
+<section class="section pt-0">
+  <div class="container">
+    <div class="filter-chips reveal">
+      <a class="chip {% if not category %}active{% endif %}" href="{% url 'core:gallery' %}">All</a>
+      <a class="chip {% if category == 'achievements' %}active{% endif %}" href="?category=achievements">Achievements</a>
+      <a class="chip {% if category == 'hackathon' %}active{% endif %}" href="?category=hackathon">Hackathons</a>
+      <a class="chip {% if category == 'workshop' %}active{% endif %}" href="?category=workshop">Workshops</a>
+      <a class="chip {% if category == 'college' %}active{% endif %}" href="?category=college">College</a>
+      <a class="chip {% if category == 'event' %}active{% endif %}" href="?category=event">Events</a>
+    </div>
+    <div class="row g-3 mt-2">
+      {% for img in page_obj %}
+        <div class="col-6 col-md-4 col-lg-3">
+          <figure class="gallery-item reveal" data-lightbox="{% if img.image %}{{ img.image.url }}{% endif %}" data-title="{{ img.title|default:img.get_category_display }}">
+            {% if img.image %}<img src="{{ img.image.url }}" alt="{{ img.title|default:'Gallery image' }}" loading="lazy">{% else %}<div class="gallery-placeholder"><i class="bi bi-image"></i></div>{% endif %}
+            <figcaption><span>{{ img.title|default:img.get_category_display }}</span><i class="bi bi-arrows-fullscreen"></i></figcaption>
+          </figure>
+        </div>
+      {% empty %}
+        <div class="col-12"><div class="empty-state">No gallery images yet.</div></div>
+      {% endfor %}
+    </div>
+    {% if page_obj.has_other_pages %}
+    <nav class="pagination-wrap" aria-label="Gallery pagination">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if category %}&category={{ category }}{% endif %}"><i class="bi bi-chevron-left"></i></a></li>{% endif %}
+        <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if category %}&category={{ category }}{% endif %}"><i class="bi bi-chevron-right"></i></a></li>{% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+  <img id="lightbox-img" src="" alt="Lightbox">
+  <p id="lightbox-title"></p>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Experience - {{ profile.name|default:"Anuj Biswal" }}{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <span class="section-tag reveal">Career</span>
+    <h1 class="page-title reveal">Work <span class="gradient-text">experience</span></h1>
+  </div>
+</section>
+
+<section class="section pt-0">
+  <div class="container">
+    <div class="timeline">
+      {% for exp in experiences %}
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"><i class="bi bi-briefcase-fill"></i></div>
+          <div class="timeline-card">
+            <div class="timeline-head">
+              <h4>{{ exp.role }}</h4>
+              <span class="timeline-period">{{ exp.date_range }}{% if exp.current %} <span class="pill-current">Current</span>{% endif %}</span>
+            </div>
+            <p class="timeline-company"><i class="bi bi-building"></i> {{ exp.company }}{% if exp.location %} - {{ exp.location }}{% endif %}</p>
+            <p>{{ exp.description }}</p>
+          </div>
+        </div>
+      {% empty %}
+        <div class="empty-state">No experience yet.</div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

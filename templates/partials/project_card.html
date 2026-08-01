@@ -1,0 +1,30 @@
+{% load static %}
+<article class="project-card">
+  <div class="project-media">
+    {% if project.image %}
+      <img src="{{ project.image.url }}" alt="{{ project.title }}" loading="lazy">
+    {% elif project.video_url %}
+      <div class="project-video-wrap">
+        <video src="{{ project.video_url }}" muted loop preload="none"></video>
+        <i class="bi bi-play-circle"></i>
+      </div>
+    {% else %}
+      <div class="project-placeholder"><i class="bi bi-code-slash"></i></div>
+    {% endif %}
+    <span class="project-status status-{{ project.status }}">{{ project.get_status_display }}</span>
+    {% if project.featured %}<span class="project-featured"><i class="bi bi-stars"></i> Featured</span>{% endif %}
+  </div>
+  <div class="project-body">
+    <h3>{{ project.title }}</h3>
+    <p class="project-desc">{{ project.description|truncatechars:140 }}</p>
+    {% if project.technologies %}
+      <div class="project-tech">
+        {% for tech in project.technologies %}<span class="tech-chip">{{ tech }}</span>{% endfor %}
+      </div>
+    {% endif %}
+    <div class="project-links">
+      {% if project.live_url %}<a class="btn btn-sm btn-neon" href="{{ project.live_url }}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i> Live Demo</a>{% endif %}
+      {% if project.github_url %}<a class="btn btn-sm btn-ghost" href="{{ project.github_url }}" target="_blank" rel="noopener"><i class="bi bi-github"></i> GitHub</a>{% endif %}
+    </div>
+  </div>
+</article>

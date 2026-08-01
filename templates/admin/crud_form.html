@@ -1,0 +1,29 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ section_title }}{% endblock %}
+{% block page_title %}<i class="bi {{ section_icon }}"></i> {{ section_title }}{% endblock %}
+{% block content %}
+<div class="admin-card form-card">
+  <div class="card-head">
+    <h3 class="card-title">{% if is_edit %}Edit{% else %}Add New{% endif %} {{ section_title }}</h3>
+    <a class="btn btn-sm btn-ghost" href="{{ list_url }}"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+  <form method="post" enctype="multipart/form-data" class="admin-form" novalidate>
+    {% csrf_token %}
+    <div class="form-grid">
+      {% for field in form %}
+        <div class="form-group {% if field.field.widget.input_type == 'checkbox' %}form-check-group{% endif %}">
+          {{ field.label_tag }}
+          {{ field }}
+          {% if field.help_text %}<small class="form-hint">{{ field.help_text }}</small>{% endif %}
+          {% for error in field.errors %}<div class="field-error"><i class="bi bi-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+    {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="form-actions">
+      <a class="btn btn-ghost" href="{{ list_url }}">Cancel</a>
+      <button type="submit" class="btn btn-neon"><i class="bi bi-check-lg"></i> Save</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

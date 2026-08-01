@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Skills - {{ profile.name|default:"Anuj Biswal" }}{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <span class="section-tag reveal">Skills</span>
+    <h1 class="page-title reveal">My <span class="gradient-text">skill set</span></h1>
+  </div>
+</section>
+
+{% for category, items in categories.items %}
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="section-tag">Category</span>
+      <h2 class="section-title">{{ category }}</h2>
+    </div>
+    <div class="row g-4">
+      {% for skill in items %}
+        <div class="col-md-6 col-lg-4">
+          <div class="skill-card reveal">
+            <div class="skill-card-top">
+              <div class="skill-ring" style="--p:{{ skill.level }}">
+                <svg viewBox="0 0 80 80">
+                  <circle class="ring-bg" cx="40" cy="40" r="34"></circle>
+                  <circle class="ring-fg" cx="40" cy="40" r="34"></circle>
+                </svg>
+                <span class="skill-pct">{{ skill.level }}%</span>
+              </div>
+              <div class="skill-name">
+                <i class="bi {{ skill.icon }}"></i>
+                <h4>{{ skill.name }}</h4>
+              </div>
+            </div>
+            <div class="skill-track"><div class="skill-fill" style="--p:{{ skill.level }}%"></div></div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% empty %}
+<div class="container"><div class="empty-state">No skills added yet.</div></div>
+{% endfor %}
+{% endblock %}

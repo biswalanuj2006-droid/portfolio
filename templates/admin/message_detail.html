@@ -1,0 +1,29 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Message - {{ message.name }}{% endblock %}
+{% block page_title %}<i class="bi bi-chat-dots-fill"></i> Message{% endblock %}
+{% block content %}
+<div class="admin-card message-detail">
+  <div class="card-head">
+    <div>
+      <h3 class="card-title">{{ message.subject|default:"(no subject)" }}</h3>
+      <span class="text-muted">{{ message.created_at|date:"d M Y H:i" }}</span>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-sm btn-ghost" href="{% url 'core:messages_list' %}"><i class="bi bi-arrow-left"></i> Back</a>
+      <form method="post" action="{% url 'core:message_toggle' message.pk %}" class="d-inline">
+        {% csrf_token %}
+        <button class="btn btn-sm btn-ghost"><i class="bi {% if message.is_read %}bi-envelope{% else %}bi-envelope-open{% endif %}"></i> Mark {{ message.is_read|yesno:"unread,read" }}</button>
+      </form>
+      <form method="post" action="{% url 'core:message_delete' message.pk %}" class="d-inline delete-form" data-confirm="Delete this message?">
+        {% csrf_token %}
+        <button class="btn btn-sm btn-danger-ghost"><i class="bi bi-trash"></i> Delete</button>
+      </form>
+    </div>
+  </div>
+  <div class="msg-meta">
+    <span><i class="bi bi-person-fill"></i> {{ message.name }}</span>
+    <a href="mailto:{{ message.email }}"><i class="bi bi-envelope-fill"></i> {{ message.email }}</a>
+  </div>
+  <div class="msg-content"><p>{{ message.message|linebreaks }}</p></div>
+</div>
+{% endblock %}

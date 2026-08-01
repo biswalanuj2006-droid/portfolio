@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}About - {{ profile.name|default:"Anuj Biswal" }}{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <span class="section-tag reveal">About Me</span>
+    <h1 class="page-title reveal">The person behind <span class="gradient-text">the code</span></h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-5">
+        <div class="about-card reveal">
+          {% if profile.profile_image %}<img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}">
+          {% else %}<div class="about-placeholder"><i class="bi bi-person-circle"></i></div>{% endif %}
+          <h3>{{ profile.name }}</h3>
+          <p class="accent-text">{{ profile.title }}</p>
+          <div class="about-meta">
+            {% if profile.location %}<span><i class="bi bi-geo-alt"></i> {{ profile.location }}</span>{% endif %}
+            {% if profile.email %}<span><i class="bi bi-envelope"></i> {{ profile.email }}</span>{% endif %}
+            {% if profile.phone %}<span><i class="bi bi-telephone"></i> {{ profile.phone }}</span>{% endif %}
+          </div>
+          {% if profile.interests %}
+            <div class="interest-chips">
+              {% for interest in profile.interests %}<span class="tech-chip">{{ interest }}</span>{% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <h2 class="section-title reveal">Biography</h2>
+        <p class="lead reveal">{{ profile.bio|default:"Passionate about building intelligent systems." }}</p>
+        <div class="mv-grid">
+          <div class="mv-card reveal">
+            <i class="bi bi-bullseye"></i>
+            <h4>Career Objective</h4>
+            <p>{{ profile.career_objective|default:"To build impactful AI products while growing as an engineer." }}</p>
+          </div>
+          <div class="mv-card reveal">
+            <i class="bi bi-signpost-split"></i>
+            <h4>My Journey</h4>
+            <p>{{ profile.journey|default:"Every project is a stepping stone towards mastery." }}</p>
+          </div>
+          <div class="mv-card reveal">
+            <i class="bi bi-rocket-takeoff"></i>
+            <h4>Mission</h4>
+            <p>{{ profile.mission|default:"Build AI tools that are accessible, ethical and practical." }}</p>
+          </div>
+          <div class="mv-card reveal">
+            <i class="bi bi-eye"></i>
+            <h4>Vision</h4>
+            <p>{{ profile.vision|default:"A future where AI amplifies human creativity." }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="section-tag">Education</span>
+      <h2 class="section-title">Academic <span class="gradient-text">journey</span></h2>
+    </div>
+    <div class="edu-list">
+      {% for edu in education %}
+        <div class="edu-card reveal">
+          <div class="edu-icon"><i class="bi bi-mortarboard-fill"></i></div>
+          <div class="edu-body">
+            <span class="edu-years">{{ edu.year_range }}</span>
+            <h4>{{ edu.degree }}</h4>
+            <p class="edu-inst">{{ edu.institution }}{% if edu.field_of_study %} - {{ edu.field_of_study }}{% endif %}</p>
+            {% if edu.description %}<p>{{ edu.description }}</p>{% endif %}
+          </div>
+        </div>
+      {% empty %}
+        <div class="empty-state">No education records yet.</div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

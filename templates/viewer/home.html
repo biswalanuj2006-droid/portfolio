@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body_class %}page-home{% endblock %}
+{% block content %}
+{{ profile.typing_roles|json_script:"typingRoles" }}
+<!-- ================= HERO ================= -->
+<header class="hero" id="top">
+  <canvas id="particles"></canvas>
+  <div class="hero-blob blob-1"></div>
+  <div class="hero-blob blob-2"></div>
+  <div class="hero-grid-overlay"></div>
+  <div class="container hero-inner">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6 order-2 order-lg-1">
+        <p class="hero-greeting reveal">Hello, I'm <span class="accent-text">{{ profile.name|default:"Anuj Biswal" }}</span> 👋</p>
+        <h1 class="hero-title reveal">
+          <span class="role-line">I build</span>
+          <span class="typed-wrap"><span id="typed" class="typed-text"></span><span class="typed-caret"></span></span>
+        </h1>
+        <p class="hero-sub reveal">{{ profile.tagline|default:"AI & Machine Learning Engineer" }}</p>
+        <div class="hero-cta reveal">
+          <a class="btn btn-neon" href="{% url 'core:contact' %}"><i class="bi bi-lightning-charge-fill"></i> Hire Me</a>
+          <a class="btn btn-ghost" href="{% url 'core:resume' %}"><i class="bi bi-download"></i> Download Resume</a>
+          <a class="btn btn-outline-light" href="{% url 'core:contact' %}"><i class="bi bi-chat-dots"></i> Contact</a>
+        </div>
+        <div class="hero-socials reveal">
+          {% for link in social_links %}
+            <a class="social-chip" href="{{ link.url }}" target="_blank" rel="noopener" aria-label="{{ link.get_platform_display }}"><i class="bi {{ link.icon }}"></i></a>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="col-lg-6 order-1 order-lg-2">
+        <div class="hero-photo-wrap reveal">
+          <div class="hero-photo-ring"></div>
+          {% if profile.profile_image %}
+            <img class="hero-photo" src="{{ profile.profile_image.url }}" alt="{{ profile.name }}">
+          {% else %}
+            <img class="hero-photo" src="{% static 'img/avatar.svg' %}" alt="Avatar placeholder">
+          {% endif %}
+          <div class="hero-badge badge-code"><i class="bi bi-code-slash"></i><span>Clean Code</span></div>
+          <div class="hero-badge badge-ai"><i class="bi bi-cpu"></i><span>AI / ML</span></div>
+        </div>
+      </div>
+    </div>
+    <a href="#stats" class="scroll-indicator" aria-label="Scroll down">
+      <span class="mouse"><span class="wheel"></span></span>
+    </a>
+  </div>
+</header>
+
+<!-- ================= STATS ================= -->
+<section class="section stats-section" id="stats">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-6 col-lg-3"><div class="stat-card reveal"><i class="bi bi-kanban"></i><span class="stat-num" data-count="{{ project_count }}">0</span><span class="stat-label">Projects</span></div></div>
+      <div class="col-6 col-lg-3"><div class="stat-card reveal"><i class="bi bi-award"></i><span class="stat-num" data-count="{{ certificate_count }}">0</span><span class="stat-label">Certificates</span></div></div>
+      <div class="col-6 col-lg-3"><div class="stat-card reveal"><i class="bi bi-lightning"></i><span class="stat-num" data-count="{{ skill_count }}">0</span><span class="stat-label">Skills</span></div></div>
+      <div class="col-6 col-lg-3"><div class="stat-card reveal"><i class="bi bi-trophy"></i><span class="stat-num" data-count="{{ achievement_count }}">0</span><span class="stat-label">Achievements</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT PREVIEW ================= -->
+<section class="section about-preview">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5">
+        <div class="about-visual reveal">
+          {% if profile.cover_image %}
+            <img src="{{ profile.cover_image.url }}" alt="Anuj Biswal">
+          {% else %}
+            <div class="about-visual-placeholder"><i class="bi bi-person-bounding-box"></i></div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <span class="section-tag reveal">About Me</span>
+        <h2 class="section-title reveal">Turning <span class="gradient-text">ideas</span> into intelligent products</h2>
+        <p class="reveal">{{ profile.bio|truncatechars:320|default:"AI & ML engineer focused on building intelligent, scalable systems." }}</p>
+        <div class="about-points">
+          <div class="point reveal"><i class="bi bi-check-circle-fill"></i> AI / ML & Deep Learning</div>
+          <div class="point reveal"><i class="bi bi-check-circle-fill"></i> Full-Stack Web Development</div>
+          <div class="point reveal"><i class="bi bi-check-circle-fill"></i> Clean, scalable architecture</div>
+        </div>
+        <a class="btn btn-neon reveal" href="{% url 'core:about' %}">More About Me <i class="bi bi-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SKILLS PREVIEW ================= -->
+<section class="section skills-preview">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="section-tag">Skills</span>
+      <h2 class="section-title">My <span class="gradient-text">toolkit</span></h2>
+    </div>
+    <div class="row g-4">
+      {% for skill in top_skills %}
+        <div class="col-md-6 col-lg-3">
+          <div class="skill-bar-card reveal">
+            <div class="skill-bar-head"><i class="bi {{ skill.icon }}"></i><span>{{ skill.name }}</span><b>{{ skill.level }}%</b></div>
+            <div class="skill-track"><div class="skill-fill" style="--p:{{ skill.level }}%"></div></div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-4 reveal"><a class="btn btn-ghost" href="{% url 'core:skills' %}">View All Skills <i class="bi bi-arrow-right"></i></a></div>
+  </div>
+</section>
+
+<!-- ================= FEATURED PROJECTS ================= -->
+<section class="section featured-section">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="section-tag">Featured Work</span>
+      <h2 class="section-title">Projects I'm <span class="gradient-text">proud of</span></h2>
+    </div>
+    <div class="row g-4">
+      {% for project in featured_projects %}
+        <div class="col-md-6 col-lg-4">{% include "partials/project_card.html" %}</div>
+      {% empty %}
+        <div class="col-12"><div class="empty-state">No featured projects yet.</div></div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-4 reveal"><a class="btn btn-neon" href="{% url 'core:projects' %}">View All Projects <i class="bi bi-arrow-right"></i></a></div>
+  </div>
+</section>
+
+<!-- ================= CERTIFICATES PREVIEW ================= -->
+<section class="section cert-preview">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="section-tag">Certifications</span>
+      <h2 class="section-title">Continuous <span class="gradient-text">learning</span></h2>
+    </div>
+    <div class="row g-4">
+      {% for cert in certificates %}
+        <div class="col-md-6 col-lg-3">
+          <div class="cert-mini reveal">
+            <div class="cert-mini-icon"><i class="bi bi-award-fill"></i></div>
+            <h4>{{ cert.title }}</h4>
+            <p>{{ cert.issuer }}</p>
+            {% if cert.credential_url %}<a href="{{ cert.credential_url }}" target="_blank" rel="noopener">Verify <i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12"><div class="empty-state">No certificates yet.</div></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="section cta-section">
+  <div class="container">
+    <div class="cta-card reveal">
+      <h2>Have a project in mind?</h2>
+      <p>Let's build something intelligent together.</p>
+      <a class="btn btn-neon btn-lg" href="{% url 'core:contact' %}"><i class="bi bi-send-fill"></i> Get In Touch</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

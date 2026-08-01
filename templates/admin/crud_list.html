@@ -1,0 +1,62 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ section_title }}{% endblock %}
+{% block page_title %}<i class="bi {{ section_icon }}"></i> {{ section_title }}{% endblock %}
+{% block content %}
+<div class="admin-toolbar">
+  {% if searchable %}
+    <form class="admin-search" method="get">
+      <i class="bi bi-search"></i>
+      <input type="text" name="q" value="{{ q }}" placeholder="Search {{ section_title|lower }}..." aria-label="Search">
+    </form>
+  {% else %}<span></span>{% endif %}
+  <a class="btn btn-neon" href="{{ create_url }}"><i class="bi bi-plus-lg"></i> Add New</a>
+</div>
+
+<div class="admin-card table-card">
+  <div class="table-scroll">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          {% for cell in rows.0.cells %}<th>{{ cell.label }}</th>{% endfor %}
+          <th class="th-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+          <tr>
+            {% for cell in row.cells %}
+              <td>
+                {% if cell.kind == "image" %}
+                  <a href="{{ cell.value }}" target="_blank" rel="noopener"><img class="cell-thumb" src="{{ cell.value }}" alt="thumb"></a>
+                {% elif cell.kind == "file" %}
+                  <a class="cell-file" href="{{ cell.value }}" target="_blank" rel="noopener"><i class="bi bi-file-earmark"></i> Open</a>
+                {% elif cell.kind == "bool" %}
+                  {% if cell.value %}<span class="badge-ok"><i class="bi bi-check-circle-fill"></i> Yes</span>{% else %}<span class="badge-no"><i class="bi bi-dash-circle"></i> No</span>{% endif %}
+                {% else %}
+                  {{ cell.value|default:"—" }}
+                {% endif %}
+              </td>
+            {% endfor %}
+            <td class="th-actions">
+              <a class="btn btn-sm btn-ghost" href="{{ row.edit_url }}"><i class="bi bi-pencil"></i> Edit</a>
+              <form method="post" action="{{ row.delete_url }}" class="d-inline delete-form" data-confirm="Delete this entry?">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-danger-ghost" type="submit"><i class="bi bi-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="9"><div class="empty-state small">No {{ section_title|lower }} found.</div></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if page_obj.has_other_pages %}
+  <div class="admin-pagination">
+    {% if page_obj.has_previous %}<a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}"><i class="bi bi-chevron-left"></i></a>{% endif %}
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ total }} total)</span>
+    {% if page_obj.has_next %}<a class="page-link" href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}"><i class="bi bi-chevron-right"></i></a>{% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

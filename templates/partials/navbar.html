@@ -1,0 +1,32 @@
+{% load static core_extras %}
+<nav class="site-nav" id="siteNav">
+  <div class="nav-inner container">
+    <a class="brand" href="{% url 'core:home' %}">
+      {% if site_settings.logo %}<img class="brand-img" src="{{ site_settings.logo.url }}" alt="logo">{% else %}<span class="brand-mark">AB</span>{% endif %}
+      <span class="brand-name">{{ profile.name|default:"Anuj Biswal" }}</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a class="nav-link {% active_class request 'home' %}" href="{% url 'core:home' %}">Home</a></li>
+      <li><a class="nav-link {% active_class request 'about' %}" href="{% url 'core:about' %}">About</a></li>
+      <li><a class="nav-link {% active_class request 'projects' %}" href="{% url 'core:projects' %}">Projects</a></li>
+      <li><a class="nav-link {% active_class request 'certificates' %}" href="{% url 'core:certificates' %}">Certificates</a></li>
+      <li><a class="nav-link {% active_class request 'skills' %}" href="{% url 'core:skills' %}">Skills</a></li>
+      <li><a class="nav-link {% active_class request 'resume' %}" href="{% url 'core:resume' %}">Resume</a></li>
+      <li class="nav-drop">
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">More</a>
+        <ul class="dropdown-menu glass-drop">
+          <li><a class="dropdown-item" href="{% url 'core:experience' %}"><i class="bi bi-briefcase"></i> Experience</a></li>
+          <li><a class="dropdown-item" href="{% url 'core:achievements' %}"><i class="bi bi-trophy"></i> Achievements</a></li>
+          <li><a class="dropdown-item" href="{% url 'core:gallery' %}"><i class="bi bi-images"></i> Gallery</a></li>
+          <li><a class="dropdown-item" href="{% url 'core:timeline' %}"><i class="bi bi-clock-history"></i> Timeline</a></li>
+        </ul>
+      </li>
+      <li><a class="nav-link {% active_class request 'contact' %}" href="{% url 'core:contact' %}">Contact</a></li>
+      <li><a class="nav-link nav-admin-link" href="{% url 'core:admin_login' %}" aria-label="Admin panel login"><i class="bi bi-shield-lock"></i> Admin</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle theme"><i class="bi bi-moon-stars"></i></button>
+      <button class="icon-btn nav-toggler" id="navToggler" aria-label="Menu"><i class="bi bi-list"></i></button>
+    </div>
+  </div>
+</nav>

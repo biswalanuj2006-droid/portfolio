@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static core_extras %}
+{% block title %}Resume - {{ profile.name|default:"Anuj Biswal" }}{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <span class="section-tag reveal">Resume</span>
+    <h1 class="page-title reveal">My <span class="gradient-text">resume</span></h1>
+  </div>
+</section>
+
+<section class="section pt-0">
+  <div class="container">
+    {% if resume %}
+      <div class="resume-toolbar reveal">
+        <div>
+          <h4>{{ resume.label }}</h4>
+          <p><i class="bi bi-clock"></i> Uploaded {{ resume.created_at|date:"d M Y" }} &middot; <i class="bi bi-file-earmark-pdf"></i> {{ resume.file|file_size_label }}</p>
+        </div>
+        <a class="btn btn-neon" href="{{ resume.file.url }}" download><i class="bi bi-download"></i> Download Resume</a>
+      </div>
+      <div class="resume-preview reveal">
+        <iframe src="{{ resume.file.url }}" title="Resume preview"></iframe>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <i class="bi bi-file-earmark-pdf"></i>
+        <h3>Resume coming soon</h3>
+        <p>The latest resume hasn't been uploaded yet. Check back later.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

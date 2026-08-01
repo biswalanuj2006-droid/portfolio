@@ -1,0 +1,11 @@
+# Core web framework
+Django>=5.2,<6.1
+
+# Image handling for ImageField
+Pillow>=10.0
+
+# Serves static files efficiently in production (Render/Railway/PythonAnywhere)
+whitenoise>=6.6
+
+# Optional: add gunicorn here when deploying on a Linux host (Render/Railway)
+# gunicorn>=22.0

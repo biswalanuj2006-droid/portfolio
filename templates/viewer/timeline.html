@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Timeline - {{ profile.name|default:"Anuj Biswal" }}{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <span class="section-tag reveal">Journey</span>
+    <h1 class="page-title reveal">My <span class="gradient-text">timeline</span></h1>
+  </div>
+</section>
+
+<section class="section pt-0">
+  <div class="container">
+    <div class="timeline timeline-center">
+      {% for item in timeline %}
+        <div class="timeline-item reveal">
+          <div class="timeline-dot {% if item.type == 'education' %}dot-edu{% endif %}">
+            <i class="bi {% if item.type == 'education' %}bi-mortarboard-fill{% else %}bi-briefcase-fill{% endif %}"></i>
+          </div>
+          <div class="timeline-card">
+            <span class="timeline-year">{{ item.year }}</span>
+            <div class="timeline-head">
+              <h4>{{ item.title }}</h4>
+              <span class="timeline-period">{{ item.period }}</span>
+            </div>
+            <p class="timeline-company"><i class="bi {% if item.type == 'education' %}bi-building{% else %}bi-building{% endif %}"></i> {{ item.subtitle }}</p>
+            {% if item.description %}<p>{{ item.description }}</p>{% endif %}
+          </div>
+        </div>
+      {% empty %}
+        <div class="empty-state">Timeline is empty.</div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

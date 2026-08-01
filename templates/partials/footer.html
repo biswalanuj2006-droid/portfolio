@@ -1,0 +1,50 @@
+{% load static core_extras %}
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="{% url 'core:home' %}"><span class="brand-mark">AB</span><span class="brand-name">{{ profile.name|default:"Anuj Biswal" }}</span></a>
+        <p>{{ profile.tagline|default:"AI & Machine Learning Engineer building intelligent products." }}</p>
+        <div class="footer-socials">
+          {% for link in social_links %}
+            <a href="{{ link.url }}" target="_blank" rel="noopener" aria-label="{{ link.get_platform_display }}"><i class="bi {{ link.icon }}"></i></a>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="{% url 'core:home' %}">Home</a></li>
+          <li><a href="{% url 'core:about' %}">About</a></li>
+          <li><a href="{% url 'core:projects' %}">Projects</a></li>
+          <li><a href="{% url 'core:skills' %}">Skills</a></li>
+          <li><a href="{% url 'core:resume' %}">Resume</a></li>
+          <li><a href="{% url 'core:admin_login' %}"><i class="bi bi-shield-lock"></i> Admin Login</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Explore</h5>
+        <ul>
+          <li><a href="{% url 'core:certificates' %}">Certificates</a></li>
+          <li><a href="{% url 'core:achievements' %}">Achievements</a></li>
+          <li><a href="{% url 'core:gallery' %}">Gallery</a></li>
+          <li><a href="{% url 'core:experience' %}">Experience</a></li>
+          <li><a href="{% url 'core:timeline' %}">Timeline</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Get In Touch</h5>
+        <ul>
+          {% if profile.email %}<li><a href="mailto:{{ profile.email }}"><i class="bi bi-envelope"></i> {{ profile.email }}</a></li>{% endif %}
+          {% if profile.phone %}<li><a href="tel:{{ profile.phone }}"><i class="bi bi-telephone"></i> {{ profile.phone }}</a></li>{% endif %}
+          {% if profile.location %}<li><i class="bi bi-geo-alt"></i> {{ profile.location }}</li>{% endif %}
+          <li><a href="{% url 'core:contact' %}"><i class="bi bi-chat-dots"></i> Contact Page</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>{{ site_settings.footer_text|default:"© 2026 Anuj Biswal. All rights reserved." }}</p>
+      <a href="#top" class="footer-top"><i class="bi bi-arrow-up-circle"></i> Back to top</a>
+    </div>
+  </div>
+</footer>

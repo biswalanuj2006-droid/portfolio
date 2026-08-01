@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Certificates - {{ profile.name|default:"Anuj Biswal" }}{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <span class="section-tag reveal">Credentials</span>
+    <h1 class="page-title reveal">My <span class="gradient-text">certificates</span></h1>
+  </div>
+</section>
+
+<section class="section pt-0">
+  <div class="container">
+    <div class="filter-bar reveal">
+      <form class="filter-search" method="get" action="{% url 'core:certificates' %}">
+        <input type="text" name="q" value="{{ q }}" placeholder="Search certificates..." aria-label="Search certificates">
+        {% if category %}<input type="hidden" name="category" value="{{ category }}">{% endif %}
+        <button type="submit" aria-label="Search"><i class="bi bi-search"></i></button>
+      </form>
+      <div class="filter-chips">
+        <a class="chip {% if not category %}active{% endif %}" href="{% url 'core:certificates' %}{% if q %}?q={{ q }}{% endif %}">All</a>
+        <a class="chip {% if category == 'ai' %}active{% endif %}" href="?category=ai{% if q %}&q={{ q }}{% endif %}">AI / ML</a>
+        <a class="chip {% if category == 'web' %}active{% endif %}" href="?category=web{% if q %}&q={{ q }}{% endif %}">Web</a>
+        <a class="chip {% if category == 'cloud' %}active{% endif %}" href="?category=cloud{% if q %}&q={{ q }}{% endif %}">Cloud</a>
+        <a class="chip {% if category == 'programming' %}active{% endif %}" href="?category=programming{% if q %}&q={{ q }}{% endif %}">Programming</a>
+        <a class="chip {% if category == 'soft' %}active{% endif %}" href="?category=soft{% if q %}&q={{ q }}{% endif %}">Soft Skills</a>
+      </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+      {% for cert in page_obj %}
+        <div class="col-md-6 col-lg-3">
+          <div class="cert-card reveal">
+            <div class="cert-media" data-lightbox="{% if cert.image %}{{ cert.image.url }}{% endif %}" data-title="{{ cert.title }}">
+              {% if cert.image %}<img src="{{ cert.image.url }}" alt="{{ cert.title }}" loading="lazy">
+              {% else %}<div class="cert-placeholder"><i class="bi bi-award"></i></div>{% endif %}
+            </div>
+            <div class="cert-body">
+              <span class="cert-cat">{{ cert.get_category_display }}</span>
+              <h4>{{ cert.title }}</h4>
+              <p class="cert-issuer">{{ cert.issuer }}</p>
+              {% if cert.issued_date %}<p class="cert-date"><i class="bi bi-calendar3"></i> {{ cert.issued_date|date:"M Y" }}</p>{% endif %}
+              {% if cert.credential_id %}<p class="cert-cred">ID: {{ cert.credential_id }}</p>{% endif %}
+              <div class="cert-actions">
+                {% if cert.pdf_file %}<a class="btn btn-sm btn-neon" href="{{ cert.pdf_file.url }}" target="_blank"><i class="bi bi-file-earmark-pdf"></i> PDF</a>{% endif %}
+                {% if cert.credential_url %}<a class="btn btn-sm btn-ghost" href="{{ cert.credential_url }}" target="_blank" rel="noopener">Verify</a>{% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12"><div class="empty-state">No certificates found.</div></div>
+      {% endfor %}
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <nav class="pagination-wrap" aria-label="Certificates pagination">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if category %}&category={{ category }}{% endif %}"><i class="bi bi-chevron-left"></i></a></li>{% endif %}
+        <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if category %}&category={{ category }}{% endif %}"><i class="bi bi-chevron-right"></i></a></li>{% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
