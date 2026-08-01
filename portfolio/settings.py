@@ -40,17 +40,12 @@ DEBUG = env_bool("DEBUG", True)
 
 # Allowed hosts for local development and Vercel deployment
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "portfolio-delta-sandy-33.vercel.app",
-]
+ALLOWED_HOSTS = ["*"]
 
 # CSRF trusted origins
-CSRF_TRUSTED_ORIGINS = env_list(
-    "CSRF_TRUSTED_ORIGINS",
-    "https://portfolio-delta-sandy-33.vercel.app"
-)
+CSRF_TRUSTED_ORIGINS = [
+    "https://portfolio-delta-sandy-33.vercel.app",
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
