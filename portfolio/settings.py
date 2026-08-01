@@ -32,13 +32,23 @@ def env_list(name: str, default: str = "") -> list:
 # Core
 # ---------------------------------------------------------------------------
 SECRET_KEY = os.environ.get(
-    "DJANGO_SECRET_KEY", "django-insecure-local-dev-only-change-me"
+    "DJANGO_SECRET_KEY",
+    "django-insecure-local-dev-only-change-me"
 )
+
 DEBUG = env_bool("DEBUG", True)
+
+# Allowed hosts for local development and Vercel deployment
 ALLOWED_HOSTS = env_list(
-    "ALLOWED_HOSTS", "localhost,127.0.0.1,anuj-biswal.onrender.com"
+    "ALLOWED_HOSTS",
+    "localhost,127.0.0.1,portfolio-delta-sandy-33.vercel.app"
 )
-CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS", "")
+
+# CSRF trusted origins
+CSRF_TRUSTED_ORIGINS = env_list(
+    "CSRF_TRUSTED_ORIGINS",
+    "https://portfolio-delta-sandy-33.vercel.app"
+)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
