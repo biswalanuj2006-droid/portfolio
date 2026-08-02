@@ -40,11 +40,14 @@ DEBUG = env_bool("DEBUG", True)
 
 # Allowed hosts for local development and Vercel deployment
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.environ.get(
+    "ALLOWED_HOSTS",
+    "127.0.0.1,localhost,.onrender.com"
+).split(",")
 
 # CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = [
-    "https://portfolio-delta-sandy-33.vercel.app",
+    "https://portfolio-wecz.onrender.com",
 ]
 
 INSTALLED_APPS = [
