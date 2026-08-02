@@ -53,12 +53,27 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = env_bool("DEBUG", True)
 
-# Allowed hosts for local development and Vercel deployment
+# Hosting platforms assign random subdomains (e.g. *.up.railway.app,
+# *.onrender.com). These suffixes are always allowed so any fresh deploy
+# works without manually editing env vars. Add custom domains via the
+# ALLOWED_HOSTS env var.
+PAAS_ALLOWED_HOST_SUFFIXES = (
+    ".onrender.com",
+    ".up.railway.app",
+    ".vercel.app",
+    ".fly.dev",
+    ".herokuapp.com",
+    ".pythonanywhere.com",
+    ".koyeb.app",
+)
 
-ALLOWED_HOSTS = os.environ.get(
-    "ALLOWED_HOSTS",
-    "127.0.0.1,localhost,.onrender.com"
-).split(",")
+# ALLOWED_HOSTS env var can add custom domains; platform suffixes stay on top.
+ALLOWED_HOSTS = list(
+    dict.fromkeys(
+        env_list("ALLOWED_HOSTS", "127.0.0.1,localhost")
+        + list(PAAS_ALLOWED_HOST_SUFFIXES)
+    )
+)
 
 # CSRF trusted origins - set via env for custom domains; any *.onrender.com
 # subdomain is auto-trusted by DynamicCSRFTrustMiddleware.

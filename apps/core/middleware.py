@@ -14,11 +14,12 @@ def _client_ip(request):
 
 
 class DynamicCSRFTrustMiddleware:
-    """Auto-trust the current host for CSRF on Render (subdomains are random).
+    """Auto-trust the current host for CSRF on hosting platforms.
 
-    Render assigns an unpredictable *.onrender.com subdomain, so instead of
-    hard-coding CSRF_TRUSTED_ORIGINS we append the live origin for onrender.com
-    hosts. Safe for local dev (localhost is never added).
+    Platforms like Render and Railway assign unpredictable subdomains
+    (e.g. *.onrender.com, *.up.railway.app), so instead of hard-coding
+    CSRF_TRUSTED_ORIGINS we append the live origin for those domains.
+    Safe for local dev (localhost is never added).
     """
 
     def __init__(self, get_response):
@@ -26,7 +27,7 @@ class DynamicCSRFTrustMiddleware:
 
     def __call__(self, request):
         host = request.get_host()
-        if host.endswith(".onrender.com") and not settings.DEBUG:
+        if host.endswith(settings.PAAS_ALLOWED_HOST_SUFFIXES) and not settings.DEBUG:
             origin = f"https://{host}"
             if origin not in settings.CSRF_TRUSTED_ORIGINS:
                 settings.CSRF_TRUSTED_ORIGINS.append(origin)
