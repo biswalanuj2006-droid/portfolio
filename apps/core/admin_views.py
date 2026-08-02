@@ -9,6 +9,7 @@ from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.db.models.fields.files import FieldFile, ImageFieldFile
 from django.db.models.functions import TruncDate
+from django.db.utils import OperationalError, ProgrammingError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -22,6 +23,7 @@ from .models import (
     Achievement, Certificate, ContactMessage, Education, Experience, FAQ,
     GalleryImage, Profile, Project, Resume, SiteSettings, Skill, SocialLink, Visitor,
 )
+from .startup import sync_admin_user
 
 # ---------------------------------------------------------------------------
 # Resource registry - single config driving the whole CRUD system (DRY)
@@ -105,6 +107,13 @@ def _display_value(obj, field):
 # ---------------------------------------------------------------------------
 def admin_login(request):
     """Custom glassmorphism login for the admin panel."""
+    # Keep the admin account from the environment in sync on first use, so a
+    # fresh deploy always has a working login (see apps/core/startup.py).
+    try:
+        sync_admin_user()
+    except (OperationalError, ProgrammingError):
+        # Database not migrated yet - the login page must still render.
+        pass
     if request.user.is_authenticated:
         return redirect("core:dashboard")
     error = None

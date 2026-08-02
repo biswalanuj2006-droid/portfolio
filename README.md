@@ -88,9 +88,9 @@ Open **http://127.0.0.1:8000/** for the site and **http://127.0.0.1:8000/admin-p
 
 ### Default admin credentials (from seed)
 
-> Username: `admin` · Password: `Anuj@2006`
+> Username: `Anuj-2006` · Password: `Anuj@2006`
 
-Change the password immediately after first login (`admin-panel` → Settings, or Django shell). The password is **not** hard-coded — it is read from `ADMIN_PASSWORD` in your `.env`.
+Change the password immediately after first login (`admin-panel` → Settings, or Django shell). The password is **not** hard-coded — it is read from `ADMIN_PASSWORD` in your `.env`. The app also syncs the admin account from `ADMIN_USERNAME` / `ADMIN_PASSWORD` on every startup (see `apps/core/startup.py`), so every deploy gets a working admin login.
 
 ---
 
