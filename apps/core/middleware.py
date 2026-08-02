@@ -1,4 +1,6 @@
 """Middleware that logs anonymous visitor activity for dashboard stats."""
+from django.conf import settings
+
 from .models import Visitor
 
 _EXCLUDED_PREFIXES = ("/admin", "/admin-panel", "/static", "/media")
@@ -9,6 +11,26 @@ def _client_ip(request):
     if forwarded:
         return forwarded.split(",")[0].strip()
     return request.META.get("REMOTE_ADDR")
+
+
+class DynamicCSRFTrustMiddleware:
+    """Auto-trust the current host for CSRF on Render (subdomains are random).
+
+    Render assigns an unpredictable *.onrender.com subdomain, so instead of
+    hard-coding CSRF_TRUSTED_ORIGINS we append the live origin for onrender.com
+    hosts. Safe for local dev (localhost is never added).
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        host = request.get_host()
+        if host.endswith(".onrender.com") and not settings.DEBUG:
+            origin = f"https://{host}"
+            if origin not in settings.CSRF_TRUSTED_ORIGINS:
+                settings.CSRF_TRUSTED_ORIGINS.append(origin)
+        return self.get_response(request)
 
 
 class VisitorMiddleware:

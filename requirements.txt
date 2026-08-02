@@ -7,6 +7,9 @@ Pillow>=10.0
 # Serves static files efficiently in production (Render/Railway/PythonAnywhere)
 whitenoise>=6.6
 
+# PostgreSQL driver (Render free Postgres)
+psycopg[binary]>=3.1
+
 # Optional: add gunicorn here when deploying on a Linux host (Render/Railway)
 # gunicorn>=22.0
 gunicorn==23.0.0

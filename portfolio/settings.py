@@ -1,6 +1,7 @@
 """Django settings for the Anuj Biswal portfolio project."""
 import os
 from pathlib import Path
+from urllib.parse import unquote, urlparse
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,6 +29,20 @@ def env_list(name: str, default: str = "") -> list:
     return [item.strip() for item in os.environ.get(name, default).split(",") if item.strip()]
 
 
+def database_from_url(url: str) -> dict:
+    """Parse a postgres:// URL (e.g. Render's DATABASE_URL) into Django DB params."""
+    parsed = urlparse(url)
+    return {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": parsed.path[1:],
+        "USER": unquote(parsed.username or ""),
+        "PASSWORD": unquote(parsed.password or ""),
+        "HOST": parsed.hostname or "",
+        "PORT": parsed.port or "",
+        "CONN_MAX_AGE": 60,
+    }
+
+
 # ---------------------------------------------------------------------------
 # Core
 # ---------------------------------------------------------------------------
@@ -45,10 +60,11 @@ ALLOWED_HOSTS = os.environ.get(
     "127.0.0.1,localhost,.onrender.com"
 ).split(",")
 
-# CSRF trusted origins
-CSRF_TRUSTED_ORIGINS = [
+# CSRF trusted origins (Render subdomains are auto-trusted by middleware)
+CSRF_TRUSTED_ORIGINS = env_list(
+    "CSRF_TRUSTED_ORIGINS",
     "https://portfolio-wecz.onrender.com",
-]
+)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -68,6 +84,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "apps.core.middleware.DynamicCSRFTrustMiddleware",
     "apps.core.middleware.VisitorMiddleware",
 ]
 
@@ -94,19 +111,22 @@ WSGI_APPLICATION = "portfolio.wsgi.application"
 ASGI_APPLICATION = "portfolio.asgi.application"
 
 # ---------------------------------------------------------------------------
-# Database - SQLite by default, PostgreSQL via environment variables
+# Database - SQLite by default, PostgreSQL via DATABASE_URL or DB_* variables
 # ---------------------------------------------------------------------------
-DATABASES = {
-    "default": {
-        "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("DB_NAME", str(BASE_DIR / "db.sqlite3")),
-        "USER": os.environ.get("DB_USER", ""),
-        "PASSWORD": os.environ.get("DB_PASSWORD", ""),
-        "HOST": os.environ.get("DB_HOST", ""),
-        "PORT": os.environ.get("DB_PORT", ""),
-        "CONN_MAX_AGE": 60,
+if os.environ.get("DATABASE_URL"):
+    DATABASES = {"default": database_from_url(os.environ["DATABASE_URL"])}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
+            "NAME": os.environ.get("DB_NAME", str(BASE_DIR / "db.sqlite3")),
+            "USER": os.environ.get("DB_USER", ""),
+            "PASSWORD": os.environ.get("DB_PASSWORD", ""),
+            "HOST": os.environ.get("DB_HOST", ""),
+            "PORT": os.environ.get("DB_PORT", ""),
+            "CONN_MAX_AGE": 60,
+        }
     }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
