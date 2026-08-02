@@ -7,7 +7,15 @@ set -o pipefail
 pip install --upgrade pip
 pip install -r requirements.txt
 
-python manage.py migrate --noinput
+# Migrate with retries: the free Postgres instance may still be provisioning
+# on the very first Blueprint deploy, so don't fail the build instantly.
+for attempt in 1 2 3 4 5; do
+  if python manage.py migrate --noinput; then
+    break
+  fi
+  echo "migrate failed (attempt $attempt/5) - retrying in 10s..."
+  sleep 10
+done
 
 # Seed only when an admin password is configured, so a bare repo still deploys.
 if [ -n "$ADMIN_PASSWORD" ]; then

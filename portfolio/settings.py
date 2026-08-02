@@ -60,11 +60,9 @@ ALLOWED_HOSTS = os.environ.get(
     "127.0.0.1,localhost,.onrender.com"
 ).split(",")
 
-# CSRF trusted origins (Render subdomains are auto-trusted by middleware)
-CSRF_TRUSTED_ORIGINS = env_list(
-    "CSRF_TRUSTED_ORIGINS",
-    "https://portfolio-wecz.onrender.com",
-)
+# CSRF trusted origins - set via env for custom domains; any *.onrender.com
+# subdomain is auto-trusted by DynamicCSRFTrustMiddleware.
+CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS", "")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
